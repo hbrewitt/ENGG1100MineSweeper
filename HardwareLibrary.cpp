@@ -107,7 +107,22 @@ class Motor{
 };
 
 class MarkerSystem{
+	int outPin;
+	int LEDpin;
+	public:
+		MarkerSystem(int pin, int LED){
+			outPin=pin;
+			LEDpin=LED;
+		}
 
+		void init(void){
+			pinMode(outPin, OUTPUT);
+			pinMode(LEDpin, OUTPUT);
+		}
+
+		void mark(void){
+			//
+		}
 };
 
 class Drive{
