@@ -79,7 +79,31 @@ class IRSensor{
 };
 
 class Motor{
+	int direction, PWM, reversed;
+	public:
+		Motor(int dirPin, int PWMPin){
+			dir=dirPin;
+			PWM=PWMPin;
+		}
 
+		void init(){
+			pinMode(dir,OUTPUT);
+			pinMode(PWM,OUTPUT);
+		}
+
+		void setMotor(int speed, int direction){
+			analogWrite(speed);
+			if(reversed) direction= !direction;
+			digitalWrite(dir, (direction ? HIGH : LOW));
+		}
+
+		void reverse(void){
+			reversed = !reversed;
+		}
+
+		void stop(void){
+			digitalWrite(PWM, LOW);
+		}
 };
 
 class MarkerSystem{
