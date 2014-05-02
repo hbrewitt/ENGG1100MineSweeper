@@ -66,7 +66,16 @@ class Magnetometer{
 };
 
 class IRSensor{
-	//
+	int pin;
+	int threshold;
+	public:
+		IRSensor(int inputPin, int wallThreshold){
+			pin=inputPin;
+			threshold=wallThreshold;
+		}
+		void init(void){pinMode(inputPin,INPUT);}
+		int read(void){return analogRead(pin);}
+		int binRead(void){( read() > threshold ? return 1 : return 0);}
 };
 
 class Motor{
