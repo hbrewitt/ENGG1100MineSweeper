@@ -5,13 +5,13 @@ class Gyroscope{
 	int address;
 	public:
 		Gyroscope(int i2cAddress){ address=i2cAddress; }
-		void init(){
+		void init(void){
 			Wire.beginTransmission(address);
 			//Wire.write(0x00);
 			//Configuration registers for gyro go here
 			Wire.endTransmission();
 		}
-		int read(){
+		int read(void){
 			int returnVal;
 			Wire.beginTransmission(address);
 
@@ -34,7 +34,7 @@ class Magnetometer{
 			address=i2cAddress;
 		}
 
-		void init(){
+		void init(void){
 			//Writes to registers for setup;
 
 			Wire.beginTransmission(address);
@@ -50,7 +50,7 @@ class Magnetometer{
 			Wire.endTransmission();
 		}
 
-		int read(){
+		int read(void){
 			int val=0;
 			Wire.beginTransmission(address);
 			Wire.send(0x03); //x=3, y=5, z=7
@@ -62,7 +62,7 @@ class Magnetometer{
 			return val;
 		}
 
-		int binRead(){return (read > threshold ? 1 : 0);}
+		int binRead(void){return (read > threshold ? 1 : 0);}
 };
 
 class IRSensor{
