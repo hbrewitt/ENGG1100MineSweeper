@@ -114,5 +114,81 @@ class Drive{
 	Gyroscope gyro;
 	Motor leftMotor;
 	Motor rightMotor;
-	//
+	byte mLeftSaved[2]={0,0};
+	byte mRightSaved[2]={0,0};
+	int targetHeading;
+	const int defaultSpeed=200;
+
+	int directionDiff(int target, int current){
+		//Stolen from Xander's RobotC drivers for the HiTechnic compass. He calls it "black voodoo magic"
+		//I did a deconstruction back in grade 9, but the versioning from then is disgusting and I don't want to go through it
+		int _tmpHeading = target - current + 180;
+		return (_tmpHeading >= 0 ? _tmpHeading % 360 : 359 - (-1 - _tmpHeading)%360) - 180;
+	}
+
+	public:
+		Drive(int gyroAddr, int mLeftDir, int mLeftPwm, int mRightDir, int mRightPwm){
+			leftMotor=Motor(mLeftDir,mLeftPwm);
+			rightMotor=Motor(mRightDir,mRightPwm);
+			gyro=Gyro(gyroAddr);
+		}
+
+		void init(void){
+			leftMotor.init();
+			rightMotor.init();
+			gyro.init();
+			delay(500);
+			targetHeading=gyro.read();
+		}
+
+		void forward(void){
+			int currHeading=gyro.read();
+			int dDiff=directionDiff(targetHeading,currHeading);
+			if( !(dDiff > 2 || dDiff < -2) ){
+				mLeftSaved[0]+=defaultSpeed;
+				mLeftSaved[0]/=2;
+				mRightSaved[0]+=defaultSpeed;
+				mRightSaved[0]/=2;
+			}else{
+				if(dDiff > 2){
+					mLeftSaved[0]+=2;
+					mRightSaved[0]-=2;
+				} else { //dDiff < -2
+					mLeftSaved[0]-=2;
+					mRightSaved[0]+=2;
+				}
+			}
+			mLeftSaved[1]=0;
+			mRightSaved[1]=0;
+			leftMotor.setMotor(mLeftSaved[0], 0);
+			rightMotor.setMotor(mRightSaved[0], 0);
+		}
+
+		void turn(int turnAngle){
+			targetHeading+=turnAngle;
+			
+			mLeftSaved[0]=defaultSpeed;
+			mRightSaved[0]=defaultSpeed
+			if (turnAngle > 0){
+				mLeftSaved[1]=0;
+				mRightSaved[1]=1;
+			}else{
+				mLeftSaved[1]=1;
+				mRightSaved[1]=0;
+			}
+			leftMotor.setMotor(mLeftSaved[0], mLeftSaved[1]);
+			rightMotor.setMotor(mRightSaved[0], mRightSaved[1]);
+			while(dDiff > 2 || dDiff < -2){
+				int currHeading=gyro.read();
+				int dDiff=directionDiff(targetHeading,currHeading);
+			}
+			stop();
+		}
+
+		void stop(void){
+			mLeftSaved[0]=0;
+			mRightSaved[0]=0;
+			leftMotor.stop();
+			rightMotor.stop()
+		}
 }
