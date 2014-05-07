@@ -79,7 +79,7 @@ class IRSensor{
 };
 
 class Motor{
-	int direction, PWM, reversed;
+	int dir, PWM, reversed;
 	public:
 		Motor(int dirPin, int PWMPin){
 			dir=dirPin;
